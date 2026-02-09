@@ -34,10 +34,15 @@ spec:
           value: "true"
         - name: RAILS_MASTER_KEY
           value: "dummy_key_for_ci"
-        resources:
-          requests:
-            cpu: "200m"
-            memory: "512Mi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 10
 ---
 apiVersion: v1
 kind: Service
