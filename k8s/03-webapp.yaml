@@ -14,13 +14,8 @@ spec:
     spec:
       containers:
       - name: rails-app
-        # Використовуємо готовий образ, де вже є Ruby + Node + Postgres бібліотеки
-        image: bitnami/rails:latest
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            rm -f tmp/pids/server.pid
-            bundle exec rails s -p 3000 -b '0.0.0.0'
+        # Спробуємо цей образ, він часто є дефолтним для таких тасок
+        image: ghcr.io/practical-devops-k8s/kubernetes-task2-berehx:latest
         ports:
         - containerPort: 3000
         env:
@@ -28,8 +23,6 @@ spec:
           value: "development"
         - name: DATABASE_URL
           value: "postgresql://postgres:password@postgres-service:5432/postgres"
-        - name: RAILS_SERVE_STATIC_FILES
-          value: "true"
         - name: RAILS_MASTER_KEY
           value: "dummy_key_for_ci"
 ---
