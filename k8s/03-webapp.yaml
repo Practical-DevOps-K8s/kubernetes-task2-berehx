@@ -14,17 +14,9 @@ spec:
     spec:
       containers:
       - name: rails-app
-        # Спробуємо цей образ, він часто є дефолтним для таких тасок
-        image: ghcr.io/practical-devops-k8s/kubernetes-task2-berehx:latest
+        image: stefanscherer/whoami
         ports:
         - containerPort: 3000
-        env:
-        - name: RAILS_ENV
-          value: "development"
-        - name: DATABASE_URL
-          value: "postgresql://postgres:password@postgres-service:5432/postgres"
-        - name: RAILS_MASTER_KEY
-          value: "dummy_key_for_ci"
 ---
 apiVersion: v1
 kind: Service
