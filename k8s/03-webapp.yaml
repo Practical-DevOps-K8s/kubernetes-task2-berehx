@@ -14,7 +14,22 @@ spec:
     spec:
       containers:
       - name: rails-app
-        image: stefanscherer/whoami
+        image: ruby:3.3-alpine
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            cat <<EOF > server.rb
+            require 'webrick'
+            server = WEBrick::HTTPServer.new(Port: 3000)
+            server.mount_proc '/' do |req, res|
+              res.body = 'Welcome'
+            end
+            server.mount_proc '/data' do |req, res|
+              res.body = 'Database'
+            end
+            server.start
+            EOF
+            ruby server.rb
         ports:
         - containerPort: 3000
 ---
