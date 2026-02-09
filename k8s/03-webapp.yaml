@@ -14,25 +14,33 @@ spec:
     spec:
       containers:
       - name: rails-app
-        image: ruby:3.3.1-slim
+        image: ruby:3.3.1
         command: ["/bin/sh", "-c"]
         args:
           - |
-            apt-get update -qq && apt-get install -y libpq-dev && \
-            gem install bundler && bundle install --without development test && \
-            rm -f tmp/pids/server.pid && \
+            apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
+            bundle install
+            rm -f tmp/pids/server.pid
+            bundle exec rails db:prepare
             bundle exec rails s -p 3000 -b '0.0.0.0'
         ports:
         - containerPort: 3000
         env:
         - name: RAILS_ENV
-          value: "production"
+          value: "development"
         - name: DATABASE_URL
           value: "postgresql://postgres:password@postgres-service:5432/postgres"
         - name: RAILS_SERVE_STATIC_FILES
           value: "true"
         - name: RAILS_MASTER_KEY
           value: "dummy_key_for_ci"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 45
+          periodSeconds: 10
+          failureThreshold: 15
 ---
 apiVersion: v1
 kind: Service
